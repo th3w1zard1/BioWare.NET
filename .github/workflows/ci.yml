@@ -32,7 +32,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
-          cache: true
 
       - name: Restore
         run: dotnet restore BioWare.NET.sln
@@ -64,7 +63,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
-          cache: true
 
       - name: Restore
         run: dotnet restore src/BioWare/BioWare.csproj
