@@ -58,6 +58,15 @@ jobs:
       - name: Pack
         run: dotnet pack src/BioWare/BioWare.csproj -c Release --no-build -p:Version=${{ steps.version.outputs.version }} -o artifacts/packages
 
+      - name: Validate NuGet credentials
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.NUGET_API_KEY }}" ]; then
+            echo "The NUGET_API_KEY GitHub Actions secret is not configured." >&2
+            echo "Add the secret, then re-run this workflow with workflow_dispatch or push a new version tag." >&2
+            exit 1
+          fi
+
       - name: Push to NuGet
         run: dotnet nuget push "artifacts/packages/*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
 
