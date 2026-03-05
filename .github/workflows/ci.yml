@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - cursor/**
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test (${{ matrix.os }} / ${{ matrix.framework }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            framework: net9.0
+          - os: windows-latest
+            framework: net48
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore
+        run: dotnet restore BioWare.NET.sln
+
+      - name: Build library
+        run: dotnet build src/BioWare/BioWare.csproj -c Release -f ${{ matrix.framework }} --no-restore -p:Version=0.0.0-ci.${{ github.run_number }}
+
+      - name: Test
+        run: dotnet test tests/BioWare.Tests/BioWare.Tests.csproj -c Release -f ${{ matrix.framework }} --no-restore --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}-${{ matrix.framework }}
+          path: tests/BioWare.Tests/TestResults/**/*.trx
+          if-no-files-found: ignore
+
+  pack:
+    name: Pack NuGet artifact
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore
+        run: dotnet restore src/BioWare/BioWare.csproj
+
+      - name: Pack
+        run: dotnet pack src/BioWare/BioWare.csproj -c Release --no-restore -p:Version=0.0.0-ci.${{ github.run_number }} -o artifacts/packages
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts/packages/*
+          if-no-files-found: error

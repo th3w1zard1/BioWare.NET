@@ -1,0 +1,16 @@
+bin/
+obj/
+.vs/
+.vscode/
+.idea/
+.DS_Store
+TestResults/
+artifacts/
+*.user
+*.suo
+*.nupkg
+*.snupkg
+*.trx
+*.coverage
+*.coveragexml
+/.dotnet/
