@@ -1,0 +1,39 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>7.3</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RestoreTreatWarningsAsErrors>false</RestoreTreatWarningsAsErrors>
+    <RepositoryUrl>https://github.com/th3w1zard1/BioWare.NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Authors>th3w1zard1</Authors>
+    <Company>th3w1zard1</Company>
+    <Product>BioWare.NET</Product>
+    <Title Condition="'$(IsPackable)' == 'true'">BioWare.NET</Title>
+    <PackageId Condition="'$(IsPackable)' == 'true'">BioWare.NET</PackageId>
+    <Description Condition="'$(IsPackable)' == 'true'">Standalone .NET library for BioWare resource parsing, serialization, extraction, and TSLPatcher workflows.</Description>
+    <PackageProjectUrl>https://github.com/th3w1zard1/BioWare.NET</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>bioware;kotor;tsl;odyssey;gff;2da;tlk;erf;rim;tslpatcher;modding;game-data</PackageTags>
+    <Version Condition="'$(Version)' == ''">2.0.0-local</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+</Project>
